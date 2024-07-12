@@ -12,7 +12,8 @@ package Telas;
 //codigo criado para testar os objetos individualmente
 
 public class TesteDeObjetos {
-    public static void main(String[] args) {
+    
+    public static void testeMeta(){
         int metas[] = {10, 15, 20, 53}; //vamos supor que esse usuário tenha essas três metas de dia
         Meta meta = new Meta(metas); //uma nova meta é criada, ela é subdividida em vários intervalos como se fossem várias metas
         //nesse caso, se ele conseguir 10 dias, a proxima meta é 15 dias, e a proxima é 20 e a próxima é 53! (um exagero, mas é apenas para testes)
@@ -29,6 +30,10 @@ public class TesteDeObjetos {
             concluida = meta.verificaMeta();
         }
         
-        System.out.println("Parabens, concluiu a meta!");
+        System.out.println("Parabens, concluiu a meta!");  
+    }
+    
+    public static void main(String[] args) {
+        testeMeta();
     }
 }
