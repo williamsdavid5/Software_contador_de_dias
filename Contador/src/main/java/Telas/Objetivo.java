@@ -34,6 +34,7 @@ public class Objetivo implements Serializable{
 
     //criação de objetivo sem metas de dia
     public Objetivo(String nome){
+        this.diasMeta = new int[]{0};
         this.metaAtual = 0; //ao iniciar um objetivo, obviamente iremos começar pela primeira meta, ou seja, a primeira posição do vetor de metas
         this.diasPassados = 0;
         this.concluido = false;

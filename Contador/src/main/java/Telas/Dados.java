@@ -32,8 +32,8 @@ public class Dados implements Serializable{
             out.writeObject(dados); //vai serializar os dados que recebeu
             
         } catch (IOException i) {
-            System.err.println("Erro na escrita: " + i.getMessage());
-            i.printStackTrace();
+            //System.err.println("Erro na escrita: " + i.getMessage());
+            //i.printStackTrace();
         }  
     }
     
@@ -45,13 +45,12 @@ public class Dados implements Serializable{
             dados = (Dados) in.readObject();
 
         } catch (IOException i) {
-            System.err.println("Erro na leitura: " + i.getMessage());
-            i.printStackTrace();
+            //System.err.println("Erro na leitura: " + i.getMessage());
+            //i.printStackTrace();
         } catch (ClassNotFoundException c) {
-            System.err.println("Classe Dados não encontrada: " + c.getMessage());
-            c.printStackTrace();
+            //System.err.println("Classe Dados não encontrada: " + c.getMessage());
+            //c.printStackTrace();
         }
-        
         return dados;
     }
     

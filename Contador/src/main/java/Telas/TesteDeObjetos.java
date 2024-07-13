@@ -55,26 +55,31 @@ public class TesteDeObjetos {
     
     public static void main(String[] args) {
         
-        /*
+        
         ArrayList<Objetivo> lista = new ArrayList<>();
         
         int[] metas = {10, 15, 20, 30};
-        lista.add(new Objetivo(metas, "Estudar mais"));
+        Objetivo obj = new Objetivo(metas, "Estudar mais");
+        obj.setDiasPassados(7);
+        lista.add(obj);
         
-        metas = new int[] {20};
-        lista.add(new Objetivo(metas, "Sem redes sociais"));
+        metas = new int[] {50};
+        obj = new Objetivo(metas, "Sem redes sociais");
+        obj.setDiasPassados(39);
+        lista.add(obj);
         
-        metas = new int[] {35};
-        lista.add(new Objetivo(metas, "Sem games"));
-
-        lista.add(new Objetivo("Estudar ingles"));
+        obj = new Objetivo("Estudar ingles");
+        obj.setDiasPassados(352);
+        lista.add(obj);
         
-        lista.add(new Objetivo("Exercicios fisicos"));
+        obj = new Objetivo("Exercicios fisicos");
+        obj.setDiasPassados(56);
+        lista.add(obj);
         
         Dados dados = new Dados();
         dados.setObjetivos(lista);
         
         dados.serializar(dados);
-*/
+
     }
 }
