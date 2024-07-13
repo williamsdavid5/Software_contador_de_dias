@@ -4,7 +4,9 @@
  */
 package Telas;
 
+import java.sql.DriverManager;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  *
@@ -53,29 +55,26 @@ public class TesteDeObjetos {
     
     public static void main(String[] args) {
         
+        /*
         ArrayList<Objetivo> lista = new ArrayList<>();
         
-        int metas[] = {10, 15, 20, 53};
-        Objetivo obj = new Objetivo(metas, "estudo");
+        int[] metas = {10, 15, 20, 30};
+        lista.add(new Objetivo(metas, "Estudar mais"));
         
-        for (int i = 0; i<6; i++){
-            lista.add(obj);
-        }
+        metas = new int[] {20};
+        lista.add(new Objetivo(metas, "Sem redes sociais"));
+        
+        metas = new int[] {35};
+        lista.add(new Objetivo(metas, "Sem games"));
+
+        lista.add(new Objetivo("Estudar ingles"));
+        
+        lista.add(new Objetivo("Exercicios fisicos"));
         
         Dados dados = new Dados();
-        ArrayList<Objetivo> lista2 = null;
-        lista2 = dados.desserializar();
+        dados.setObjetivos(lista);
         
-        if (lista2 == null){
-            System.out.println("nao ha dados para serializar");
-        }
-        
-        dados.serializar(lista);
-        lista2 = dados.desserializar();
-        
-        if (lista2 != null){
-            System.out.println("ha dados sim!");
-        }
-        
+        dados.serializar(dados);
+*/
     }
 }

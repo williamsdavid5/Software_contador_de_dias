@@ -4,14 +4,15 @@
  */
 package Telas;
 
+
 import java.io.FileInputStream;
-import java.util.ArrayList;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.io.Serializable;
-import javax.swing.JOptionPane;
+
 
 /**
  *
@@ -25,27 +26,35 @@ public class Dados implements Serializable{
     public Dados(){
         objetivos = null;
     }
-    
-    public void serializar(ArrayList<Objetivo> objetivos){
-        this.objetivos = objetivos;
+
+    public void serializar(Dados dados){
         try(FileOutputStream fileout = new FileOutputStream("Dados.bin"); ObjectOutputStream out = new ObjectOutputStream(fileout)){
-            out.writeObject(this); //tenta serializar a si mesmo
-        } catch (IOException i){
-            System.out.println("erro na escrita");
+            out.writeObject(dados); //vai serializar os dados que recebeu
+            
+        } catch (IOException i) {
+            System.err.println("Erro na escrita: " + i.getMessage());
+            i.printStackTrace();
         }  
     }
     
-    public ArrayList<Objetivo> desserializar(){
+    public Dados desserializar(){
+        
+        Dados dados = null;
+        
         try(FileInputStream fileIN = new FileInputStream("Dados.bin");ObjectInputStream in = new ObjectInputStream(fileIN)){
-            Dados dados = (Dados) in.readObject();
-            this.setObjetivos(dados.getObjetivos());
+            dados = (Dados) in.readObject();
 
-        } catch (Exception e){
-            System.out.println("erro na leitura");
+        } catch (IOException i) {
+            System.err.println("Erro na leitura: " + i.getMessage());
+            i.printStackTrace();
+        } catch (ClassNotFoundException c) {
+            System.err.println("Classe Dados não encontrada: " + c.getMessage());
+            c.printStackTrace();
         }
         
-        return this.objetivos;
+        return dados;
     }
+    
 
     public ArrayList<Objetivo> getObjetivos() {
         return objetivos;
@@ -54,6 +63,4 @@ public class Dados implements Serializable{
     public void setObjetivos(ArrayList<Objetivo> objetivos) {
         this.objetivos = objetivos;
     }
-    
-    
 }

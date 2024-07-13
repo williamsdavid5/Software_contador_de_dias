@@ -9,9 +9,10 @@ package Telas;
  * @author david
  */
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Objetivo {
+public class Objetivo implements Serializable{
     private int diasMeta[]; //quantos dias o usuário definiu para aquela meta
     private int metaAtual; //caso existam multiplas metas em um objetivo, esse atributo irá marcar em qual meta estamos atualmente
     private int diasPassados; //quantos dias já se passaram desde a data de inicio
@@ -39,7 +40,12 @@ public class Objetivo {
         this.nome = nome;
         this.dataInicio = LocalDate.now(); //ao criar o objetivo, a data atual será a data inicial
     }
-    
+/*    
+    @Override
+    public String toString(){
+
+    }
+*/   
     public boolean verificaMeta(){
         //verifica se a meta atua, já foi batida
         if (this.diasPassados == this.diasMeta[metaAtual]){
