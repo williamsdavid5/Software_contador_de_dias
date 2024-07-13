@@ -21,6 +21,7 @@ public class Objetivo {
     private String nome; //nome do objetivo do usuário
     private LocalDate dataInicio; //data inicial do objetivo
 
+    //criação de um objetivo com metas de dia
     public Objetivo(int diasMeta[], String nome){
         this.diasMeta = diasMeta;
         this.metaAtual = 0; //ao iniciar um objetivo, obviamente iremos começar pela primeira meta, ou seja, a primeira posição do vetor de metas
@@ -30,6 +31,14 @@ public class Objetivo {
         this.dataInicio = LocalDate.now(); //ao criar o objetivo, a data atual será a data inicial
     }
 
+    //criação de objetivo sem metas de dia
+    public Objetivo(String nome){
+        this.metaAtual = 0; //ao iniciar um objetivo, obviamente iremos começar pela primeira meta, ou seja, a primeira posição do vetor de metas
+        this.diasPassados = 0;
+        this.concluido = false;
+        this.nome = nome;
+        this.dataInicio = LocalDate.now(); //ao criar o objetivo, a data atual será a data inicial
+    }
     
     public boolean verificaMeta(){
         //verifica se a meta atua, já foi batida
@@ -46,9 +55,59 @@ public class Objetivo {
         
         return this.concluido;
     }
-    
-    //
+
     public void atualizaMeta(){
         this.diasPassados += 1;
     }
+    
+    //////////////////////////////////////// gets e sets ////////////////////////////////////////
+
+    public int[] getDiasMeta() {
+        return diasMeta;
+    }
+
+    public void setDiasMeta(int[] diasMeta) {
+        this.diasMeta = diasMeta;
+    }
+
+    public int getMetaAtual() {
+        return metaAtual;
+    }
+
+    public void setMetaAtual(int metaAtual) {
+        this.metaAtual = metaAtual;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public int getDiasPassados() {
+        return diasPassados;
+    }
+
+    public void setDiasPassados(int diasPassados) {
+        this.diasPassados = diasPassados;
+    }
+
+    public boolean isConcluido() {
+        return concluido;
+    }
+
+    public void setConcluido(boolean concluido) {
+        this.concluido = concluido;
+    }
+
+    public LocalDate getDataInicio() {
+        return dataInicio;
+    }
+
+    public void setDataInicio(LocalDate dataInicio) {
+        this.dataInicio = dataInicio;
+    }
+    
 }

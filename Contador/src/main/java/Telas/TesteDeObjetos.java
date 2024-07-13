@@ -4,6 +4,8 @@
  */
 package Telas;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author david
@@ -25,7 +27,7 @@ public class TesteDeObjetos {
         boolean concluida = meta.verificaMeta();
         while (!concluida){
             meta.atualizaMeta();
-            System.out.print("Dias passados: " + meta.getDiasPassados());
+            System.out.println("Dias passados: " + meta.getDiasPassados() + " ");
             System.out.println(" Meta atual: " + meta.getMetaAtual());
             concluida = meta.verificaMeta();
         }
@@ -33,7 +35,47 @@ public class TesteDeObjetos {
         System.out.println("Parabens, concluiu a meta!");  
     }
     
+    public static void testeObjetivo(){
+        int metas[] = {10, 15, 20, 53};
+        Objetivo obj = new Objetivo(metas, "estudo");
+        
+        boolean concluido = false;
+        
+        while (!concluido){
+            concluido = obj.verificaMeta();
+            System.out.println("Meta atual: " + obj.getNome());
+            System.out.print("dias passados: " + obj.getDiasPassados());
+            System.out.println(" -- meta atual: " + obj.getDiasMeta()[obj.getMetaAtual()]);
+            obj.atualizaMeta();
+        }
+    }
+
+    
     public static void main(String[] args) {
-        testeMeta();
+        
+        ArrayList<Objetivo> lista = new ArrayList<>();
+        
+        int metas[] = {10, 15, 20, 53};
+        Objetivo obj = new Objetivo(metas, "estudo");
+        
+        for (int i = 0; i<6; i++){
+            lista.add(obj);
+        }
+        
+        Dados dados = new Dados();
+        ArrayList<Objetivo> lista2 = null;
+        lista2 = dados.desserializar();
+        
+        if (lista2 == null){
+            System.out.println("nao ha dados para serializar");
+        }
+        
+        dados.serializar(lista);
+        lista2 = dados.desserializar();
+        
+        if (lista2 != null){
+            System.out.println("ha dados sim!");
+        }
+        
     }
 }

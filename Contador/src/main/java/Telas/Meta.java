@@ -3,11 +3,16 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package Telas;
+
+import java.io.Serializable;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 /**
  *
  * @author david
  */
-public class Meta {
+public class Meta implements Serializable{
     private int diasMeta[]; //quantos dias o usuário definiu para aquela meta
     private int metaAtual; //caso existam multiplas metas em um objetivo, esse atributo irá marcar em qual meta estamos atualmente
     private int diasPassados; //quantos dias já se passaram desde a data de inicio
@@ -52,7 +57,7 @@ public class Meta {
         
         return this.concluida;
     }
-
+    
     ///////////////////////////////////gets e sets///////////////////////////////////
     public int getDiasPassados() {
         return diasPassados;
