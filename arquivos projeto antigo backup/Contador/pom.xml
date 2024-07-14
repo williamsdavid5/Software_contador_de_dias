@@ -11,4 +11,5 @@
         <maven.compiler.target>21</maven.compiler.target>
         <exec.mainClass>com.mycompany.contador.Contador</exec.mainClass>
     </properties>
+    <name>Contador</name>
 </project>
