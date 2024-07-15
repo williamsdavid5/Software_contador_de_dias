@@ -21,6 +21,7 @@ public class TelaAdicionarObjetivo extends javax.swing.JFrame {
     private Objetivo objetivo;
     private ArrayList<Integer> metas;
     private TelaInicial telaInicial;
+    private boolean editar;
     
     public TelaAdicionarObjetivo(TelaInicial telaInicial) {
         initComponents();
@@ -162,7 +163,7 @@ public class TelaAdicionarObjetivo extends javax.swing.JFrame {
             Iterator iterator = metas.iterator();
             
             while (iterator.hasNext()){
-                label = label + " - " +(String.valueOf(iterator.next()));
+                label = label + " -> " +(String.valueOf(iterator.next()));
             }
             
             metasLabel.setText(label);
@@ -174,7 +175,7 @@ public class TelaAdicionarObjetivo extends javax.swing.JFrame {
     }//GEN-LAST:event_botaoAdicionarMetaActionPerformed
 
     private void botaoSalvarMetaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoSalvarMetaActionPerformed
-
+        
         int certeza = JOptionPane.showConfirmDialog(null, "Tem certeza?");
         
         if (certeza == 0){
@@ -222,7 +223,7 @@ public class TelaAdicionarObjetivo extends javax.swing.JFrame {
             Iterator iterator = metas.iterator();
             
             while (iterator.hasNext()){
-                label = label + " - " +(String.valueOf(iterator.next()));
+                label = label + " -> " +(String.valueOf(iterator.next()));
             }
             
             if (metas.isEmpty()){
@@ -263,6 +264,28 @@ public class TelaAdicionarObjetivo extends javax.swing.JFrame {
         });
     }
 
+    public void editarObjetivo(Objetivo objetivo, int indice) {
+        this.objetivo = objetivo; //primeiramente define o objetivo que esta aqui com os dados do objetivo recebido da tela inicial
+        campoNomeObjetivo.setText(objetivo.getNome()); //e ja podemos inserir seu nome no campo
+        
+        int [] diasMeta = objetivo.getDiasMeta(); //tiramos suas informações de meta salvas (mas e se não tiver? futuramente vemos isso...)
+        
+        metas = new ArrayList<>();
+        String label = "Metas: ";
+        
+        //percorre esses objetivos e ja adicionda a lista de dias que temos aqui
+        for(int i = 0; i<diasMeta.length; i++){
+            metas.add(diasMeta[i]);
+            
+            //ao mesmo tempo, atualizamos a label que exibe essas informações
+            label = label + " -> " + diasMeta[i];
+        }
+        metasLabel.setText(label);
+        
+    }
+
+    
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton botaoAdicionarMeta;
     private javax.swing.JButton botaoRemoverMeta;

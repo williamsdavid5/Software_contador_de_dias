@@ -121,6 +121,8 @@ public class TelaInicial extends javax.swing.JFrame {
 
         jLabel3.setText("Progresso:");
 
+        jProgressBar1.setStringPainted(true);
+
         metaLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         metaLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         metaLabel.setText("Objetivo:");
@@ -208,6 +210,11 @@ public class TelaInicial extends javax.swing.JFrame {
         });
 
         botaoEditar.setText("Editar");
+        botaoEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botaoEditarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -383,6 +390,24 @@ public class TelaInicial extends javax.swing.JFrame {
         this.enable(false);
         
     }//GEN-LAST:event_botaoNovoActionPerformed
+
+    private void botaoEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoEditarActionPerformed
+        
+        try {
+            int selecionado = tabela.getSelectedRow();
+            
+            Objetivo obj = objetivos.get(selecionado);
+            
+            TelaAdicionarObjetivo telaAdicionar = new TelaAdicionarObjetivo(this);
+            telaAdicionar.setVisible(true);
+            telaAdicionar.editarObjetivo(obj, selecionado);
+            //telaAdicionar.setVisible(true);
+            
+        } catch (Exception e){
+            System.out.println(e);
+        }
+        
+    }//GEN-LAST:event_botaoEditarActionPerformed
 
     /**
      * @param args the command line arguments
