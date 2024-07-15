@@ -5,6 +5,8 @@
 package Telas;
 
 
+import static java.awt.image.ImageObserver.ERROR;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -24,7 +26,7 @@ public class Dados implements Serializable{
     private ArrayList<Objetivo> objetivos; //todos os objetivos cadastrados do usuário
     
     public Dados(){
-        objetivos = null;
+        objetivos = new ArrayList<>();
     }
 
     public void serializar(Dados dados){
@@ -32,8 +34,16 @@ public class Dados implements Serializable{
             out.writeObject(dados); //vai serializar os dados que recebeu
             
         } catch (IOException i) {
-            //System.err.println("Erro na escrita: " + i.getMessage());
-            //i.printStackTrace();
+            javax.swing.JOptionPane.showMessageDialog(null,"Atenção","Problema ao salvar!", ERROR);
+        }  
+    }
+    
+    public void serializar(Dados dados, String caminho){
+        try(FileOutputStream fileout = new FileOutputStream(caminho + "\\Dados.bin"); ObjectOutputStream out = new ObjectOutputStream(fileout)){
+            out.writeObject(dados); //vai serializar os dados que recebeu
+            
+        } catch (IOException i) {
+            javax.swing.JOptionPane.showMessageDialog(null,"Atenção","Problema ao salvar!", ERROR);
         }  
     }
     
@@ -54,6 +64,13 @@ public class Dados implements Serializable{
         return dados;
     }
     
+    public void excluirDados(){
+        try {
+            new File("Dados.bin").delete();
+        } catch (Exception e){
+            javax.swing.JOptionPane.showMessageDialog(null, "Atenção", "Erro na leitura!", ERROR);
+        }
+    }
 
     public ArrayList<Objetivo> getObjetivos() {
         return objetivos;

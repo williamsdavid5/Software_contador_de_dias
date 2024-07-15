@@ -4,27 +4,20 @@
  */
 package Telas;
 
-import com.formdev.flatlaf.FlatDarculaLaf;
-import com.formdev.flatlaf.FlatDarkLaf;
-import com.formdev.flatlaf.FlatIntelliJLaf;
-import com.formdev.flatlaf.FlatLaf;
-import com.formdev.flatlaf.intellijthemes.FlatArcDarkIJTheme;
-import com.formdev.flatlaf.intellijthemes.FlatMonocaiIJTheme;
-import com.formdev.flatlaf.themes.FlatMacDarkLaf;
-import com.formdev.flatlaf.themes.FlatMacLightLaf;
+
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Random;
-import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 /**
  *
  * @author david
  */
 public class TelaInicial extends javax.swing.JFrame {
-
-    String[] mensagensMotivacionais;
-    String mensagemDoDia;
     Dados dados;
     ArrayList<Objetivo> objetivos;
     /**
@@ -32,38 +25,65 @@ public class TelaInicial extends javax.swing.JFrame {
      */
     public TelaInicial() {
         initComponents();
-        dados = new Dados();
-        resgatarDados();
+        this.dados = new Dados();
         
+        try {
+            resgatarDados();
+        } catch (Exception e){
+            
+        }
     }
 
     //método para resgatar os dados salvos no pc, se existirem
     //também para preencher a tabela
     public void resgatarDados(){
+        //
         dados = dados.desserializar();
+        inserirNaTabela(dados);
+        Objetivo primeiro = dados.getObjetivos().getFirst();
+        atualizarInformacoes(primeiro.getDiasPassados(), primeiro.getDiasMeta()[primeiro.getMetaAtual()], primeiro.getNome());
         
-        if (dados == null){
-            dados = new Dados();
-            objetivos = new ArrayList<>();
-            dados.serializar(dados);
-            
+    }
+    
+    public void atualizarInformacoes(int diasPassados, int proximaMeta, String nome){
+        double progresso = ((double) diasPassados / proximaMeta) * 100;
+        jProgressBar1.setValue((int) progresso);
+        metaLabel.setText("Objetivo: " + nome);
+        progressoLabel.setText(String.valueOf(diasPassados) + " Dias");
+        
+        if (proximaMeta == 0){
+            proximaMetaLabel.setText("-");
         } else {
-            objetivos = dados.getObjetivos();
-
-            Iterator iterator = objetivos.iterator();
-
-            while (iterator.hasNext()){
-                Objetivo atual = (Objetivo) iterator.next();
-
-                DefaultTableModel modeloTabela = (DefaultTableModel) tabela.getModel();
-
-                String nome = atual.getNome();
-                Integer diasPassados = atual.getDiasPassados();
-                Integer proximaMeta = atual.getDiasMeta()[atual.getMetaAtual()];
-
-                modeloTabela.addRow(new Object [] {nome, diasPassados, proximaMeta});
-            }
+            proximaMetaLabel.setText(String.valueOf(proximaMeta));
         }
+    }
+    
+    public void inserirNaTabela(Dados dados){
+        objetivos = dados.getObjetivos();
+        
+        Iterator iterator = objetivos.iterator();
+        DefaultTableModel modeloTabela = (DefaultTableModel) tabela.getModel();
+        modeloTabela.setRowCount(0);
+        
+        while (iterator.hasNext()){
+            Objetivo atual = (Objetivo) iterator.next();
+
+            String nome = atual.getNome();
+            Integer diasPassados = atual.getDiasPassados();
+            Integer proximaMeta = atual.getDiasMeta()[atual.getMetaAtual()];
+
+            modeloTabela.addRow(new Object [] {nome, diasPassados, proximaMeta});
+        }
+    }
+    
+    public void salvarDados(){
+        this.dados.setObjetivos(this.objetivos);
+        dados.serializar(dados);
+    }
+    
+    public void salvarDados(String caminho){
+        this.dados.setObjetivos(this.objetivos);
+        dados.serializar(dados, caminho);
     }
     
     /**
@@ -88,10 +108,13 @@ public class TelaInicial extends javax.swing.JFrame {
         tabela = new javax.swing.JTable();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
-        jMenu2 = new javax.swing.JMenu();
+        carregarDadosMenu = new javax.swing.JMenuItem();
+        excluirDadosMenu = new javax.swing.JMenuItem();
+        salvarDadosMenu = new javax.swing.JMenuItem();
+        ajudaMenu = new javax.swing.JMenu();
+        sobreMenu = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Contador de dias");
         setResizable(false);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Bem vindo", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.TOP));
@@ -206,11 +229,44 @@ public class TelaInicial extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jMenu1.setText("File");
+        jMenu1.setText("Arquivo");
+
+        carregarDadosMenu.setText("Carregar dados de...");
+        carregarDadosMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                carregarDadosMenuActionPerformed(evt);
+            }
+        });
+        jMenu1.add(carregarDadosMenu);
+
+        excluirDadosMenu.setText("Excluir dados");
+        excluirDadosMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                excluirDadosMenuActionPerformed(evt);
+            }
+        });
+        jMenu1.add(excluirDadosMenu);
+
+        salvarDadosMenu.setText("Salvar dados em...");
+        salvarDadosMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                salvarDadosMenuActionPerformed(evt);
+            }
+        });
+        jMenu1.add(salvarDadosMenu);
+
         jMenuBar1.add(jMenu1);
 
-        jMenu2.setText("Edit");
-        jMenuBar1.add(jMenu2);
+        ajudaMenu.setText("Ajuda");
+        ajudaMenu.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ajudaMenuMouseClicked(evt);
+            }
+        });
+        jMenuBar1.add(ajudaMenu);
+
+        sobreMenu.setText("Sobre");
+        jMenuBar1.add(sobreMenu);
 
         setJMenuBar(jMenuBar1);
 
@@ -245,17 +301,72 @@ public class TelaInicial extends javax.swing.JFrame {
         int diasPassados = (int) tabela.getValueAt(selecionado, 1);
         int proximaMeta = (int) tabela.getValueAt(selecionado, 2);
         
-        double progresso = ((double) diasPassados / proximaMeta) * 100;
-        jProgressBar1.setValue((int) progresso);
-        metaLabel.setText("Objetivo: " + nome);
-        progressoLabel.setText(String.valueOf(diasPassados) + " Dias");
-        
-        if (proximaMeta == 0){
-            proximaMetaLabel.setText("-");
-        } else {
-            proximaMetaLabel.setText(String.valueOf(proximaMeta));
-        }
+        atualizarInformacoes(diasPassados, proximaMeta, nome);
     }//GEN-LAST:event_tabelaMouseClicked
+
+    private void carregarDadosMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_carregarDadosMenuActionPerformed
+        JFileChooser fileChooser = new JFileChooser();
+        FileNameExtensionFilter filtro = new FileNameExtensionFilter("bin", "bin");
+        fileChooser.setFileFilter(filtro);
+        
+        int selecao = fileChooser.showOpenDialog(this);
+        
+        if (selecao == JFileChooser.APPROVE_OPTION){
+            java.io.File dado = fileChooser.getSelectedFile();
+            
+            try (FileInputStream fileIn = new FileInputStream(dado); ObjectInputStream in = new ObjectInputStream(fileIn)){
+                this.dados = (Dados) in.readObject();
+                
+                int substituir = javax.swing.JOptionPane.showConfirmDialog(null, "Substituir dados existentes? (Muito cuidado!)");
+                
+                if (substituir == 0){
+                    dados.serializar(dados);
+                }
+                inserirNaTabela(dados);
+                
+                Objetivo primeiro = dados.getObjetivos().getFirst();
+                atualizarInformacoes(primeiro.getDiasPassados(), primeiro.getDiasMeta()[primeiro.getMetaAtual()], primeiro.getNome());
+                
+            } catch (Exception e){
+                javax.swing.JOptionPane.showMessageDialog(null, "Atenção", "Erro na leitura!", ERROR);
+
+            }
+        }
+        
+    }//GEN-LAST:event_carregarDadosMenuActionPerformed
+
+    private void excluirDadosMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_excluirDadosMenuActionPerformed
+        int opcao = javax.swing.JOptionPane.showConfirmDialog(null, "Exclior todos os dados existentes? (Muito cuidado!)");
+        
+        if (opcao == 0){
+            dados.excluirDados();
+        }
+        
+        DefaultTableModel modeloTabela = (DefaultTableModel) tabela.getModel();
+        modeloTabela.setRowCount(0);
+        
+        atualizarInformacoes(0, 0, " ");
+        progressoLabel.setText("-");
+    }//GEN-LAST:event_excluirDadosMenuActionPerformed
+
+    private void salvarDadosMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salvarDadosMenuActionPerformed
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        
+        int selecao = fileChooser.showOpenDialog(null);
+        
+        if (selecao == JFileChooser.APPROVE_OPTION){
+            String diretorio = fileChooser.getSelectedFile().getAbsolutePath();
+            
+            this.dados.setObjetivos(this.objetivos);
+            dados.serializar(dados, diretorio);
+        }
+    }//GEN-LAST:event_salvarDadosMenuActionPerformed
+
+    private void ajudaMenuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ajudaMenuMouseClicked
+        new TelaAjuda(this).setVisible(true);
+        this.setEnabled(false);
+    }//GEN-LAST:event_ajudaMenuMouseClicked
 
     /**
      * @param args the command line arguments
@@ -264,9 +375,8 @@ public class TelaInicial extends javax.swing.JFrame {
         
         try {
             //UIManager.setLookAndFeel(new FlatMacDarkLaf());
-            com.formdev.flatlaf.intellijthemes.FlatSolarizedLightIJTheme.setup();
-
-            
+            com.formdev.flatlaf.intellijthemes.FlatMaterialDesignDarkIJTheme.setup();
+ 
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -280,11 +390,13 @@ public class TelaInicial extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu ajudaMenu;
+    private javax.swing.JMenuItem carregarDadosMenu;
+    private javax.swing.JMenuItem excluirDadosMenu;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -293,6 +405,8 @@ public class TelaInicial extends javax.swing.JFrame {
     private javax.swing.JLabel metaLabel;
     private javax.swing.JLabel progressoLabel;
     private javax.swing.JLabel proximaMetaLabel;
+    private javax.swing.JMenuItem salvarDadosMenu;
+    private javax.swing.JMenu sobreMenu;
     private javax.swing.JTable tabela;
     // End of variables declaration//GEN-END:variables
 }
