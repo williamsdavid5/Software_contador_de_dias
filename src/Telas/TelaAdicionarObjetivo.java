@@ -92,6 +92,7 @@ public class TelaAdicionarObjetivo extends javax.swing.JFrame {
         });
 
         botaoExcluir.setText("Excluir este");
+        botaoExcluir.setVisible(false);
         botaoExcluir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 botaoExcluirActionPerformed(evt);
@@ -115,13 +116,12 @@ public class TelaAdicionarObjetivo extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(botaoRemoverMeta)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(botaoSalvarMeta)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(botaoExcluir))
-                            .addComponent(metasLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addComponent(metasLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(botaoExcluir)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(botaoSalvarMeta)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -233,8 +233,6 @@ public class TelaAdicionarObjetivo extends javax.swing.JFrame {
             } catch (Exception e){
                 System.out.print(e);
             }
-            
-            
             this.dispose();
         }  
     }//GEN-LAST:event_botaoSalvarMetaActionPerformed
@@ -268,7 +266,7 @@ public class TelaAdicionarObjetivo extends javax.swing.JFrame {
 
         Objetivo primeiro = telaInicial.getObjetivos().getFirst();
 
-        if (primeiro.getMetaAtual() == 0){
+        if (primeiro.getDiasMeta().isEmpty()){
             telaInicial.atualizarInformacoes(primeiro.getDiasPassados(), 0, primeiro.getNome());
         } else {
             telaInicial.atualizarInformacoes(primeiro.getDiasPassados(), primeiro.getDiasMeta().get(primeiro.getMetaAtual()), primeiro.getNome());
@@ -280,6 +278,24 @@ public class TelaAdicionarObjetivo extends javax.swing.JFrame {
     private void botaoExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoExcluirActionPerformed
         
         int opcao = JOptionPane.showConfirmDialog(null, "Deseja mesmo excluir esse Objetivo? Seu banco de dados será alterado permanentemente.");
+        
+        if (opcao == 0){
+            ArrayList<Objetivo> objetivos = telaInicial.getObjetivos();
+            
+            objetivos.remove(indiceEditar);
+            
+            telaInicial.setObjetivos(objetivos);
+            
+            Dados dados = new Dados();
+            dados.setObjetivos(objetivos);
+            
+            telaInicial.setDados(dados);
+            dados.serializar(dados);
+            
+            telaInicial.inserirNaTabela(dados);
+            
+            this.dispose();
+        }
         
     }//GEN-LAST:event_botaoExcluirActionPerformed
 
@@ -329,6 +345,7 @@ public class TelaAdicionarObjetivo extends javax.swing.JFrame {
         remover.remove(indice);
         this.objetivo.setDiasMeta(remover);
 */
+        botaoExcluir.setVisible(true);
     }
 
     

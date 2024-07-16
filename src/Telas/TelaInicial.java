@@ -146,7 +146,6 @@ public class TelaInicial extends javax.swing.JFrame {
         excluirDadosMenu = new javax.swing.JMenuItem();
         salvarDadosMenu = new javax.swing.JMenuItem();
         ajudaMenu = new javax.swing.JMenu();
-        sobreMenu = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -314,9 +313,6 @@ public class TelaInicial extends javax.swing.JFrame {
         });
         jMenuBar1.add(ajudaMenu);
 
-        sobreMenu.setText("Sobre");
-        jMenuBar1.add(sobreMenu);
-
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -410,6 +406,7 @@ public class TelaInicial extends javax.swing.JFrame {
         
         atualizarInformacoes(0, 0, " ");
         progressoLabel.setText("-");
+        botaoEditar.setVisible(false);
     }//GEN-LAST:event_excluirDadosMenuActionPerformed
 
     private void salvarDadosMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salvarDadosMenuActionPerformed
@@ -510,7 +507,6 @@ public class TelaInicial extends javax.swing.JFrame {
     private javax.swing.JLabel progressoLabel;
     private javax.swing.JLabel proximaMetaLabel;
     private javax.swing.JMenuItem salvarDadosMenu;
-    private javax.swing.JMenu sobreMenu;
     private javax.swing.JTable tabela;
     // End of variables declaration//GEN-END:variables
 }
