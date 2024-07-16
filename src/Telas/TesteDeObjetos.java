@@ -5,6 +5,8 @@
 package Telas;
 
 import java.sql.DriverManager;
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -68,6 +70,7 @@ public class TesteDeObjetos {
         
         Dados dados = new Dados();
         dados.setObjetivos(lista);
+        dados.setDataDoSoftware(LocalDate.of(2024, 07, 14));
         
         dados.serializar(dados);
 

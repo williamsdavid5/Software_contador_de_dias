@@ -224,6 +224,7 @@ public class TelaAdicionarObjetivo extends javax.swing.JFrame {
                     }
                     
                     dados.setObjetivos(objetivos);
+                    dados.setDataDoSoftware(telaInicial.dados.getDataDoSoftware());
                     telaInicial.setDados(dados);
                     telaInicial.setObjetivos(objetivos);
                     
@@ -288,7 +289,7 @@ public class TelaAdicionarObjetivo extends javax.swing.JFrame {
             
             Dados dados = new Dados();
             dados.setObjetivos(objetivos);
-            
+            dados.setDataDoSoftware(telaInicial.getDados().getDataDoSoftware());
             telaInicial.setDados(dados);
             dados.serializar(dados);
             

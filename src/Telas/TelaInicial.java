@@ -14,6 +14,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JOptionPane;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 /**
  *
  * @author david
@@ -21,6 +23,7 @@ import javax.swing.JOptionPane;
 public class TelaInicial extends javax.swing.JFrame {
     Dados dados;
     ArrayList<Objetivo> objetivos;
+    LocalDate dataDoSoftware;
     /**
      * Creates new form TelaInicial
      */
@@ -32,7 +35,7 @@ public class TelaInicial extends javax.swing.JFrame {
             resgatarDados();
             
         }catch (Exception e){
-            //JOptionPane.showMessageDialog(null, "Erro ao carregar dados.", "Erro", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Erro ao carregar dados.", "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -42,10 +45,27 @@ public class TelaInicial extends javax.swing.JFrame {
         
         try {
             dados = dados.desserializar();
+            objetivos = dados.getObjetivos();
+            
+            this.dataDoSoftware = dados.getDataDoSoftware();
+            
+            LocalDate dataAtual  = LocalDate.now();
+            
+            if (!(dataDoSoftware.equals(dataAtual)) && dataAtual.isAfter(dataDoSoftware)){
+                long diferencaDeDias = ChronoUnit.DAYS.between(dataDoSoftware, dataAtual);
+                atualizarObjetivos(diferencaDeDias);
+                
+            } else if (!(dataDoSoftware.equals(dataAtual)) && dataDoSoftware.isAfter(dataAtual)) {
+                String dataSalva = dataDoSoftware.getDayOfMonth() + "/" + dataDoSoftware.getMonthValue() + "/" + dataDoSoftware.getYear();
+                JOptionPane.showMessageDialog(null, "Algo está errado no seu calendário! Data salva pelo software: " + dataSalva);
+                System.exit(0);
+            }
+            
+            labelData.setText("Data: " +dataDoSoftware.getDayOfMonth() + "/" + dataDoSoftware.getMonthValue() + "/" + dataDoSoftware.getYear());
             inserirNaTabela(dados);
             Objetivo primeiro = dados.getObjetivos().getFirst();
             
-            if (primeiro.getMetaAtual() == 0){
+            if (primeiro.getDiasMeta().isEmpty()){
                 atualizarInformacoes(primeiro.getDiasPassados(), 0, primeiro.getNome());
             } else {
                 atualizarInformacoes(primeiro.getDiasPassados(), primeiro.getDiasMeta().get(primeiro.getMetaAtual()), primeiro.getNome());
@@ -54,7 +74,8 @@ public class TelaInicial extends javax.swing.JFrame {
             //atualizarInformacoes(primeiro.getDiasPassados(), primeiro.getDiasMeta().get(primeiro.getMetaAtual()), primeiro.getNome());
             
         } catch (java.lang.NullPointerException e){
-        
+            System.out.println(e);
+            
         } catch (Exception e){
             System.out.print(e);
             JOptionPane.showMessageDialog(null, "Erro ao carregar dados. Sinto muito, mas seus dados foram excluídos...", "Erro", JOptionPane.ERROR_MESSAGE);
@@ -66,6 +87,35 @@ public class TelaInicial extends javax.swing.JFrame {
             atualizarInformacoes(0, 0, " ");
             progressoLabel.setText("-");
         }
+    }
+    
+    //este metodo deve percorrer todos os objetivos cadastrados
+    public void atualizarObjetivos(long diferencaDeDias){
+        Iterator iterator = objetivos.iterator();
+        ArrayList<Objetivo> objetivosAtualizados = new ArrayList<>();
+        
+        while (iterator.hasNext()){
+            Objetivo atual = (Objetivo) iterator.next();
+            
+            String nomeObjetivo = atual.getNome();
+            
+            int opcao = JOptionPane.showConfirmDialog(null, "Você manteve seu objetivo \"" + nomeObjetivo + "\" durante esses " + String.valueOf(diferencaDeDias) + " dias?", "Seja sincero!", JOptionPane.YES_NO_OPTION);
+            
+            if (opcao == 0){
+                atual.setDiasPassados(atual.getDiasPassados() + (int) diferencaDeDias);
+                objetivosAtualizados.add(atual);
+                
+            } if (opcao == 1){
+                atual.setDiasPassados(0);
+                objetivosAtualizados.add(atual);
+                JOptionPane.showMessageDialog(null, "Seu progresso foi zerado nesse objetivo! Me desulpe, mas é para o seu bem...");
+            }
+        }
+        
+        objetivos = objetivosAtualizados;
+        dados.setObjetivos(objetivosAtualizados);
+        dados.setDataDoSoftware(LocalDate.now());
+        dados.serializar(dados); ////////////////////////////////////////////////////////////////////////////
     }
     
     public void atualizarInformacoes(int diasPassados, int proximaMeta, String nome){
@@ -135,6 +185,7 @@ public class TelaInicial extends javax.swing.JFrame {
         metaLabel = new javax.swing.JLabel();
         proximaMetaLabel = new javax.swing.JLabel();
         progressoLabel = new javax.swing.JLabel();
+        labelData = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tabela = new javax.swing.JTable();
@@ -170,20 +221,24 @@ public class TelaInicial extends javax.swing.JFrame {
         progressoLabel.setText("-");
         progressoLabel.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Atual", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP));
 
+        labelData.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelData.setText("Data:");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(metaLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jProgressBar1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 395, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(metaLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jProgressBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 395, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(progressoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(proximaMetaLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(proximaMetaLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(labelData, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -198,7 +253,8 @@ public class TelaInicial extends javax.swing.JFrame {
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(24, 24, 24))
+                .addGap(8, 8, 8)
+                .addComponent(labelData))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Metas atuais", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.TOP));
@@ -435,7 +491,7 @@ public class TelaInicial extends javax.swing.JFrame {
     }//GEN-LAST:event_botaoNovoActionPerformed
 
     private void botaoEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoEditarActionPerformed
-        
+
         try {
             int selecionado = tabela.getSelectedRow();
             
@@ -503,6 +559,7 @@ public class TelaInicial extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel labelData;
     private javax.swing.JLabel metaLabel;
     private javax.swing.JLabel progressoLabel;
     private javax.swing.JLabel proximaMetaLabel;

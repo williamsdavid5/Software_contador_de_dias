@@ -14,6 +14,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.io.Serializable;
+import java.time.LocalDate;
 
 
 /**
@@ -24,6 +25,7 @@ public class Dados implements Serializable{
     //a classe dados é apenas uma forma de facilitar a serialzação e desserialização dos dados do software
     
     private ArrayList<Objetivo> objetivos; //todos os objetivos cadastrados do usuário
+    private LocalDate dataDoSoftware;
     
     public Dados(){
         objetivos = new ArrayList<>();
@@ -79,4 +81,14 @@ public class Dados implements Serializable{
     public void setObjetivos(ArrayList<Objetivo> objetivos) {
         this.objetivos = objetivos;
     }
+
+    public LocalDate getDataDoSoftware() {
+        return dataDoSoftware;
+    }
+
+    public void setDataDoSoftware(LocalDate dataDoSoftware) {
+        this.dataDoSoftware = dataDoSoftware;
+    }
+    
+    
 }
