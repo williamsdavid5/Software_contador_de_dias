@@ -11,9 +11,10 @@ package Telas;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class Objetivo implements Serializable{
-    private int diasMeta[]; //quantos dias o usuário definiu para aquela meta
+    private ArrayList<Integer> diasMeta; //quantos dias o usuário definiu para aquela meta
     private int metaAtual; //caso existam multiplas metas em um objetivo, esse atributo irá marcar em qual meta estamos atualmente
     private int diasPassados; //quantos dias já se passaram desde a data de inicio
     //private LocalDate diaInicio; //dia em que a meta foi estabelecida para calcular a contagem
@@ -23,7 +24,7 @@ public class Objetivo implements Serializable{
     private LocalDate dataInicio; //data inicial do objetivo
 
     //criação de um objetivo com metas de dia
-    public Objetivo(int diasMeta[], String nome){
+    public Objetivo(ArrayList<Integer> diasMeta, String nome){
         this.diasMeta = diasMeta;
         this.metaAtual = 0; //ao iniciar um objetivo, obviamente iremos começar pela primeira meta, ou seja, a primeira posição do vetor de metas
         this.diasPassados = 0;
@@ -34,7 +35,8 @@ public class Objetivo implements Serializable{
 
     //criação de objetivo sem metas de dia
     public Objetivo(String nome){
-        this.diasMeta = new int[]{0};
+        this.diasMeta = new ArrayList<>();
+        //diasMeta.add(0);
         this.metaAtual = 0; //ao iniciar um objetivo, obviamente iremos começar pela primeira meta, ou seja, a primeira posição do vetor de metas
         this.diasPassados = 0;
         this.concluido = false;
@@ -49,10 +51,10 @@ public class Objetivo implements Serializable{
 */   
     public boolean verificaMeta(){
         //verifica se a meta atua, já foi batida
-        if (this.diasPassados == this.diasMeta[metaAtual]){
+        if (this.diasPassados == this.diasMeta.get(metaAtual)){
             //se foi, precisamos verificar então se há outra meta na lista
             try {
-                int teste = diasMeta[metaAtual+1]; //variavel teste para verificar se ha mais um elemento na lista
+                int teste = diasMeta.get(metaAtual + 1); //variavel teste para verificar se ha mais um elemento na lista
                 metaAtual += 1; //se tudo der certo, podemos aumentar a meta atual em 1 e seguir para a proxima meta que ja sabemos que está na lista
                 
             } catch (Exception e){
@@ -69,11 +71,11 @@ public class Objetivo implements Serializable{
     
     //////////////////////////////////////// gets e sets ////////////////////////////////////////
 
-    public int[] getDiasMeta() {
+    public ArrayList<Integer> getDiasMeta() {
         return diasMeta;
     }
 
-    public void setDiasMeta(int[] diasMeta) {
+    public void setDiasMeta(ArrayList<Integer> diasMeta) {
         this.diasMeta = diasMeta;
     }
 

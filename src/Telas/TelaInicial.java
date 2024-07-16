@@ -30,18 +30,17 @@ public class TelaInicial extends javax.swing.JFrame {
         try {
             resgatarDados();
         } catch (Exception e){
-            
+            System.out.println(e);
         }
     }
 
     //método para resgatar os dados salvos no pc, se existirem
     //também para preencher a tabela
     public void resgatarDados(){
-        //
         dados = dados.desserializar();
         inserirNaTabela(dados);
         Objetivo primeiro = dados.getObjetivos().getFirst();
-        atualizarInformacoes(primeiro.getDiasPassados(), primeiro.getDiasMeta()[primeiro.getMetaAtual()], primeiro.getNome());
+        atualizarInformacoes(primeiro.getDiasPassados(), primeiro.getDiasMeta().get(primeiro.getMetaAtual()), primeiro.getNome());
         
     }
     
@@ -70,9 +69,15 @@ public class TelaInicial extends javax.swing.JFrame {
 
             String nome = atual.getNome();
             Integer diasPassados = atual.getDiasPassados();
-            Integer proximaMeta = atual.getDiasMeta()[atual.getMetaAtual()];
+            
+            try {
+                Integer proximaMeta = atual.getDiasMeta().get(atual.getMetaAtual());
+                modeloTabela.addRow(new Object [] {nome, diasPassados, proximaMeta});
+            } catch (Exception e){
+                modeloTabela.addRow(new Object [] {nome, diasPassados, "-"});
+            }
+            
 
-            modeloTabela.addRow(new Object [] {nome, diasPassados, proximaMeta});
         }
     }
     
@@ -316,9 +321,14 @@ public class TelaInicial extends javax.swing.JFrame {
         int selecionado = tabela.getSelectedRow();
         String nome = (String) tabela.getValueAt(selecionado, 0);
         int diasPassados = (int) tabela.getValueAt(selecionado, 1);
-        int proximaMeta = (int) tabela.getValueAt(selecionado, 2);
         
-        atualizarInformacoes(diasPassados, proximaMeta, nome);
+        try {
+            int proximaMeta = (int) tabela.getValueAt(selecionado, 2);
+            atualizarInformacoes(diasPassados, proximaMeta, nome);
+        } catch (java.lang.ClassCastException e){
+            int proximaMeta = 0;
+            atualizarInformacoes(diasPassados, proximaMeta, nome);
+        }
     }//GEN-LAST:event_tabelaMouseClicked
 
     private void carregarDadosMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_carregarDadosMenuActionPerformed
@@ -342,7 +352,7 @@ public class TelaInicial extends javax.swing.JFrame {
                 inserirNaTabela(dados);
                 
                 Objetivo primeiro = dados.getObjetivos().getFirst();
-                atualizarInformacoes(primeiro.getDiasPassados(), primeiro.getDiasMeta()[primeiro.getMetaAtual()], primeiro.getNome());
+                atualizarInformacoes(primeiro.getDiasPassados(), primeiro.getDiasMeta().get(primeiro.getMetaAtual()), primeiro.getNome());
                 
             } catch (Exception e){
                 javax.swing.JOptionPane.showMessageDialog(null, "Atenção", "Erro na leitura!", ERROR);
@@ -405,8 +415,7 @@ public class TelaInicial extends javax.swing.JFrame {
             
         } catch (Exception e){
             System.out.println(e);
-        }
-        
+        }        
     }//GEN-LAST:event_botaoEditarActionPerformed
 
     /**

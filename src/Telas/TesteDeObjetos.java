@@ -16,7 +16,7 @@ import java.util.Iterator;
 //codigo criado para testar os objetos individualmente
 
 public class TesteDeObjetos {
-    
+    /*
     public static void testeObjetivo(){
         int metas[] = {10, 15, 20, 53};
         Objetivo obj = new Objetivo(metas, "estudo");
@@ -30,21 +30,31 @@ public class TesteDeObjetos {
             System.out.println(" -- meta atual: " + obj.getDiasMeta()[obj.getMetaAtual()]);
             obj.atualizaMeta();
         }
-    }
 
+    }
+*/
     
     public static void main(String[] args) {
         
         
         ArrayList<Objetivo> lista = new ArrayList<>();
         
-        int[] metas = {10, 15, 20, 30};
-        Objetivo obj = new Objetivo(metas, "Estudar mais");
+        //int[] metas = {10, 15, 20, 30};
+        
+        ArrayList<Integer> metas = new ArrayList<>();
+        metas.add(10);
+        metas.add(15);
+        metas.add(20);
+        metas.add(30);
+        
+        Objetivo obj = new Objetivo(new ArrayList<>(metas), "Estudar mais");
         obj.setDiasPassados(7);
         lista.add(obj);
         
-        metas = new int[] {50};
-        obj = new Objetivo(metas, "Sem redes sociais");
+        metas.clear();
+        metas.add(50);
+                
+        obj = new Objetivo(new ArrayList<>(metas), "Sem redes sociais");
         obj.setDiasPassados(39);
         lista.add(obj);
         

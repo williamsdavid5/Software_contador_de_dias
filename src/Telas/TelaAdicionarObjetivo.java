@@ -22,20 +22,21 @@ public class TelaAdicionarObjetivo extends javax.swing.JFrame {
     private ArrayList<Integer> metas;
     private TelaInicial telaInicial;
     private boolean editar;
+    private int indiceEditar;
     
     public TelaAdicionarObjetivo(TelaInicial telaInicial) {
         initComponents();
         this.telaInicial = telaInicial;
-        
+        editar = false;
         metas = new ArrayList<>();
 
     }
-    
+    /*
     public TelaAdicionarObjetivo(Objetivo objetivo) {
         initComponents();
 
     }
-
+*/
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -57,8 +58,8 @@ public class TelaAdicionarObjetivo extends javax.swing.JFrame {
         setTitle("Objetivo");
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosing(java.awt.event.WindowEvent evt) {
-                formWindowClosing(evt);
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
             }
         });
 
@@ -99,18 +100,17 @@ public class TelaAdicionarObjetivo extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(botaoSalvarMeta))
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addComponent(jLabel1)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(campoNomeObjetivo, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(0, 0, Short.MAX_VALUE))
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addComponent(botaoAdicionarMeta)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(botaoRemoverMeta)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(metasLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(campoNomeObjetivo, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(botaoAdicionarMeta)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(botaoRemoverMeta)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(metasLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -175,7 +175,6 @@ public class TelaAdicionarObjetivo extends javax.swing.JFrame {
     }//GEN-LAST:event_botaoAdicionarMetaActionPerformed
 
     private void botaoSalvarMetaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoSalvarMetaActionPerformed
-        
         int certeza = JOptionPane.showConfirmDialog(null, "Tem certeza?");
         
         if (certeza == 0){
@@ -190,14 +189,23 @@ public class TelaAdicionarObjetivo extends javax.swing.JFrame {
                         objetivo = new Objetivo(nomeObjetivo);
                     } else {
 
-                        int diasMeta[] = metas.stream().mapToInt(Integer::intValue).toArray();
+                        //int diasMeta[] = metas.stream().mapToInt(Integer::intValue).toArray();
 
-                        objetivo = new Objetivo(diasMeta, nomeObjetivo);
+                        objetivo = new Objetivo(metas, nomeObjetivo);
                     }
                     ArrayList<Objetivo> objetivos = telaInicial.getObjetivos();
+                    
+                    //casos seja uma edição, precisamos remover o elemento marcado antes
+                    if (editar){
+                        objetivo.setDiasPassados(objetivos.get(indiceEditar).getDiasPassados());
+                        objetivos.remove(indiceEditar);
+                        telaInicial.setObjetivos(objetivos);
+                     }
+                    
                     objetivos.add(objetivo);
                     
                     Dados dados = telaInicial.getDados();
+
                     dados.setObjetivos(objetivos);
                     
                     telaInicial.setDados(dados);
@@ -210,6 +218,9 @@ public class TelaAdicionarObjetivo extends javax.swing.JFrame {
             } catch (Exception e){
                 System.out.print(e);
             }
+            
+            System.out.println("aaaaaaaaaaaaaaaaaa");
+            this.dispose();
         }  
     }//GEN-LAST:event_botaoSalvarMetaActionPerformed
 
@@ -233,14 +244,19 @@ public class TelaAdicionarObjetivo extends javax.swing.JFrame {
             }
             
         } catch (Exception e){
-        
+            System.out.println(e);
         }
         
     }//GEN-LAST:event_botaoRemoverMetaActionPerformed
 
-    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+
+        Objetivo primeiro = telaInicial.getObjetivos().getFirst();
+        telaInicial.atualizarInformacoes(primeiro.getDiasPassados(), primeiro.getDiasMeta().get(primeiro.getMetaAtual()), primeiro.getNome());
+        
         telaInicial.enable(true);
-    }//GEN-LAST:event_formWindowClosing
+        telaInicial.setVisible(true);
+    }//GEN-LAST:event_formWindowClosed
 
     /**
      * @param args the command line arguments
@@ -265,23 +281,29 @@ public class TelaAdicionarObjetivo extends javax.swing.JFrame {
     }
 
     public void editarObjetivo(Objetivo objetivo, int indice) {
-        this.objetivo = objetivo; //primeiramente define o objetivo que esta aqui com os dados do objetivo recebido da tela inicial
-        campoNomeObjetivo.setText(objetivo.getNome()); //e ja podemos inserir seu nome no campo
+        this.editar = true;
+        this.indiceEditar = indice;
+        this.objetivo = objetivo;
+        metas = objetivo.getDiasMeta();
+        campoNomeObjetivo.setText(objetivo.getNome());
         
-        int [] diasMeta = objetivo.getDiasMeta(); //tiramos suas informações de meta salvas (mas e se não tiver? futuramente vemos isso...)
-        
-        metas = new ArrayList<>();
+        ArrayList<Integer> diasMeta = objetivo.getDiasMeta();
+
         String label = "Metas: ";
         
-        //percorre esses objetivos e ja adicionda a lista de dias que temos aqui
-        for(int i = 0; i<diasMeta.length; i++){
-            metas.add(diasMeta[i]);
-            
-            //ao mesmo tempo, atualizamos a label que exibe essas informações
-            label = label + " -> " + diasMeta[i];
+        Iterator iterator = diasMeta.iterator();
+
+        while(iterator.hasNext()){
+            label = label + " -> " + iterator.next();
         }
         metasLabel.setText(label);
         
+        //o que??? não são METAS que devemos remover, são OBJETIVOS! e eles estão na tela inicial
+        /*
+        ArrayList<Integer> remover = this.objetivo.getDiasMeta();
+        remover.remove(indice);
+        this.objetivo.setDiasMeta(remover);
+*/
     }
 
     
