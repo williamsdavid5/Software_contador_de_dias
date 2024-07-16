@@ -7,12 +7,13 @@ package Telas;
 
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
+import javax.swing.JOptionPane;
 /**
  *
  * @author david
@@ -29,56 +30,84 @@ public class TelaInicial extends javax.swing.JFrame {
         
         try {
             resgatarDados();
-        } catch (Exception e){
-            System.out.println(e);
+            
+        }catch (Exception e){
+            //JOptionPane.showMessageDialog(null, "Erro ao carregar dados.", "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     //método para resgatar os dados salvos no pc, se existirem
     //também para preencher a tabela
     public void resgatarDados(){
-        dados = dados.desserializar();
-        inserirNaTabela(dados);
-        Objetivo primeiro = dados.getObjetivos().getFirst();
-        atualizarInformacoes(primeiro.getDiasPassados(), primeiro.getDiasMeta().get(primeiro.getMetaAtual()), primeiro.getNome());
         
+        try {
+            dados = dados.desserializar();
+            inserirNaTabela(dados);
+            Objetivo primeiro = dados.getObjetivos().getFirst();
+            
+            if (primeiro.getMetaAtual() == 0){
+                atualizarInformacoes(primeiro.getDiasPassados(), 0, primeiro.getNome());
+            } else {
+                atualizarInformacoes(primeiro.getDiasPassados(), primeiro.getDiasMeta().get(primeiro.getMetaAtual()), primeiro.getNome());
+            }
+            
+            //atualizarInformacoes(primeiro.getDiasPassados(), primeiro.getDiasMeta().get(primeiro.getMetaAtual()), primeiro.getNome());
+            
+        } catch (java.lang.NullPointerException e){
+        
+        } catch (Exception e){
+            System.out.print(e);
+            JOptionPane.showMessageDialog(null, "Erro ao carregar dados. Sinto muito, mas seus dados foram excluídos...", "Erro", JOptionPane.ERROR_MESSAGE);
+            dados.excluirDados();
+
+            DefaultTableModel modeloTabela = (DefaultTableModel) tabela.getModel();
+            modeloTabela.setRowCount(0);
+
+            atualizarInformacoes(0, 0, " ");
+            progressoLabel.setText("-");
+        }
     }
     
     public void atualizarInformacoes(int diasPassados, int proximaMeta, String nome){
-        double progresso = ((double) diasPassados / proximaMeta) * 100;
-        jProgressBar1.setValue((int) progresso);
-        metaLabel.setText("Objetivo: " + nome);
-        progressoLabel.setText(String.valueOf(diasPassados) + " Dias");
+        //System.out.print(proximaMeta);
         
-        if (proximaMeta == 0){
-            proximaMetaLabel.setText("-");
-        } else {
-            proximaMetaLabel.setText(String.valueOf(proximaMeta));
+        try {
+            double progresso = ((double) diasPassados / proximaMeta) * 100;
+            jProgressBar1.setValue((int) progresso);
+            metaLabel.setText("Objetivo: " + nome);
+            progressoLabel.setText(String.valueOf(diasPassados) + " Dias");
+
+            if (proximaMeta == 0){
+                proximaMetaLabel.setText("-");
+            } else {
+                proximaMetaLabel.setText(String.valueOf(proximaMeta));
+            }
+        } catch (Exception e){
+            JOptionPane.showMessageDialog(null, "Erro ao atualizar informações.", "Erro", JOptionPane.ERROR_MESSAGE);
         }
+        
     }
     
     public void inserirNaTabela(Dados dados){
         objetivos = dados.getObjetivos();
-        
+
         Iterator iterator = objetivos.iterator();
         DefaultTableModel modeloTabela = (DefaultTableModel) tabela.getModel();
         modeloTabela.setRowCount(0);
-        
+
         while (iterator.hasNext()){
             Objetivo atual = (Objetivo) iterator.next();
 
             String nome = atual.getNome();
             Integer diasPassados = atual.getDiasPassados();
-            
+
             try {
                 Integer proximaMeta = atual.getDiasMeta().get(atual.getMetaAtual());
                 modeloTabela.addRow(new Object [] {nome, diasPassados, proximaMeta});
             } catch (Exception e){
                 modeloTabela.addRow(new Object [] {nome, diasPassados, "-"});
             }
-            
-
-        }
+        } 
     }
     
     public void salvarDados(){
@@ -229,7 +258,7 @@ public class TelaInicial extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 395, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(botaoEditar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -344,14 +373,18 @@ public class TelaInicial extends javax.swing.JFrame {
             try (FileInputStream fileIn = new FileInputStream(dado); ObjectInputStream in = new ObjectInputStream(fileIn)){
                 this.dados = (Dados) in.readObject();
                 
-                int substituir = javax.swing.JOptionPane.showConfirmDialog(null, "Substituir dados existentes? (Muito cuidado!)");
+                int substituir = javax.swing.JOptionPane.showConfirmDialog(null, "Importar dados do disco irá substituir todos os seus dados já salvos. Substituir dados existentes? (Muito cuidado!)");
                 
                 if (substituir == 0){
                     dados.serializar(dados);
                 }
+                
+                this.objetivos = dados.getObjetivos();
+                
                 inserirNaTabela(dados);
                 
                 Objetivo primeiro = dados.getObjetivos().getFirst();
+                
                 atualizarInformacoes(primeiro.getDiasPassados(), primeiro.getDiasMeta().get(primeiro.getMetaAtual()), primeiro.getNome());
                 
             } catch (Exception e){
@@ -367,6 +400,9 @@ public class TelaInicial extends javax.swing.JFrame {
         
         if (opcao == 0){
             dados.excluirDados();
+            this.dados = new Dados();
+            this.objetivos = new ArrayList<>();
+            //resgatarDados();
         }
         
         DefaultTableModel modeloTabela = (DefaultTableModel) tabela.getModel();

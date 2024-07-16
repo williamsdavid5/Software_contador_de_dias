@@ -53,6 +53,7 @@ public class TelaAdicionarObjetivo extends javax.swing.JFrame {
         botaoAdicionarMeta = new javax.swing.JButton();
         botaoSalvarMeta = new javax.swing.JButton();
         botaoRemoverMeta = new javax.swing.JButton();
+        botaoExcluir = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Objetivo");
@@ -90,6 +91,13 @@ public class TelaAdicionarObjetivo extends javax.swing.JFrame {
             }
         });
 
+        botaoExcluir.setText("Excluir este");
+        botaoExcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botaoExcluirActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -97,9 +105,6 @@ public class TelaAdicionarObjetivo extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(botaoSalvarMeta))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -110,7 +115,13 @@ public class TelaAdicionarObjetivo extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(botaoRemoverMeta)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(metasLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(botaoSalvarMeta)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(botaoExcluir))
+                            .addComponent(metasLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -125,9 +136,10 @@ public class TelaAdicionarObjetivo extends javax.swing.JFrame {
                     .addComponent(metasLabel)
                     .addComponent(botaoAdicionarMeta, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addComponent(botaoRemoverMeta, javax.swing.GroupLayout.PREFERRED_SIZE, 17, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(botaoSalvarMeta)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(botaoExcluir)
+                    .addComponent(botaoSalvarMeta)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -175,7 +187,7 @@ public class TelaAdicionarObjetivo extends javax.swing.JFrame {
     }//GEN-LAST:event_botaoAdicionarMetaActionPerformed
 
     private void botaoSalvarMetaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoSalvarMetaActionPerformed
-        int certeza = JOptionPane.showConfirmDialog(null, "Tem certeza?");
+        int certeza = JOptionPane.showConfirmDialog(null, "Deseja mesmo inserir esse Objetivo? Seu banco de dados será alterado permanentemente.");
         
         if (certeza == 0){
             try {
@@ -184,42 +196,45 @@ public class TelaAdicionarObjetivo extends javax.swing.JFrame {
                 if (nomeObjetivo.trim().equals("")){
                     System.out.println("campo vazio!");
                 } else {
-
+                    
                     if (metas.isEmpty()){
                         objetivo = new Objetivo(nomeObjetivo);
                     } else {
-
-                        //int diasMeta[] = metas.stream().mapToInt(Integer::intValue).toArray();
-
                         objetivo = new Objetivo(metas, nomeObjetivo);
                     }
+                    
                     ArrayList<Objetivo> objetivos = telaInicial.getObjetivos();
+                    
+                    if (objetivos == null){
+                        objetivos = new ArrayList<>();
+                    }
                     
                     //casos seja uma edição, precisamos remover o elemento marcado antes
                     if (editar){
-                        objetivo.setDiasPassados(objetivos.get(indiceEditar).getDiasPassados());
+                        this.objetivo.setDiasPassados(objetivos.get(indiceEditar).getDiasPassados());
                         objetivos.remove(indiceEditar);
                         telaInicial.setObjetivos(objetivos);
                      }
-                    
-                    objetivos.add(objetivo);
-                    
-                    Dados dados = telaInicial.getDados();
 
-                    dados.setObjetivos(objetivos);
+                    objetivos.add(this.objetivo);
+                    Dados dados = telaInicial.getDados();
                     
+                    if (dados == null){
+                        dados = new Dados();
+                    }
+                    
+                    dados.setObjetivos(objetivos);
                     telaInicial.setDados(dados);
                     telaInicial.setObjetivos(objetivos);
                     
                     telaInicial.dados.serializar(dados);
                     telaInicial.inserirNaTabela(dados);
                 }
-
             } catch (Exception e){
                 System.out.print(e);
             }
             
-            System.out.println("aaaaaaaaaaaaaaaaaa");
+            
             this.dispose();
         }  
     }//GEN-LAST:event_botaoSalvarMetaActionPerformed
@@ -252,11 +267,21 @@ public class TelaAdicionarObjetivo extends javax.swing.JFrame {
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
 
         Objetivo primeiro = telaInicial.getObjetivos().getFirst();
-        telaInicial.atualizarInformacoes(primeiro.getDiasPassados(), primeiro.getDiasMeta().get(primeiro.getMetaAtual()), primeiro.getNome());
-        
+
+        if (primeiro.getMetaAtual() == 0){
+            telaInicial.atualizarInformacoes(primeiro.getDiasPassados(), 0, primeiro.getNome());
+        } else {
+            telaInicial.atualizarInformacoes(primeiro.getDiasPassados(), primeiro.getDiasMeta().get(primeiro.getMetaAtual()), primeiro.getNome());
+        }
         telaInicial.enable(true);
         telaInicial.setVisible(true);
     }//GEN-LAST:event_formWindowClosed
+
+    private void botaoExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoExcluirActionPerformed
+        
+        int opcao = JOptionPane.showConfirmDialog(null, "Deseja mesmo excluir esse Objetivo? Seu banco de dados será alterado permanentemente.");
+        
+    }//GEN-LAST:event_botaoExcluirActionPerformed
 
     /**
      * @param args the command line arguments
@@ -310,6 +335,7 @@ public class TelaAdicionarObjetivo extends javax.swing.JFrame {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton botaoAdicionarMeta;
+    private javax.swing.JButton botaoExcluir;
     private javax.swing.JButton botaoRemoverMeta;
     private javax.swing.JButton botaoSalvarMeta;
     private javax.swing.JTextField campoNomeObjetivo;
