@@ -4,6 +4,7 @@
  */
 package Telas;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javax.swing.JOptionPane;
@@ -202,12 +203,26 @@ public class TelaAdicionarObjetivo extends javax.swing.JFrame {
                     } else {
                         objetivo = new Objetivo(metas, nomeObjetivo);
                     }
+
+                    Dados dados = telaInicial.getDados();
                     
-                    ArrayList<Objetivo> objetivos = telaInicial.getObjetivos();
-                    
-                    if (objetivos == null){
-                        objetivos = new ArrayList<>();
+                    if (telaInicial.getObjetivos().isEmpty()){
+                        dados = new Dados();
+                        dados.setDataDoSoftware(LocalDate.now());
+                        //telaInicial.setDados(dados);
+                    } else {
+                        dados.setDataDoSoftware(telaInicial.dados.getDataDoSoftware());
                     }
+
+                    ArrayList<Objetivo> objetivos = new ArrayList<>();
+                    
+                    if (telaInicial.getObjetivos().isEmpty()){
+                        objetivos = new ArrayList<>();
+                    } else {
+                        objetivos = telaInicial.getObjetivos();
+                    }
+                    
+                    objetivos.add(this.objetivo);
                     
                     //casos seja uma edição, precisamos remover o elemento marcado antes
                     if (editar){
@@ -215,16 +230,9 @@ public class TelaAdicionarObjetivo extends javax.swing.JFrame {
                         objetivos.remove(indiceEditar);
                         telaInicial.setObjetivos(objetivos);
                      }
-
-                    objetivos.add(this.objetivo);
-                    Dados dados = telaInicial.getDados();
-                    
-                    if (dados == null){
-                        dados = new Dados();
-                    }
                     
                     dados.setObjetivos(objetivos);
-                    dados.setDataDoSoftware(telaInicial.dados.getDataDoSoftware());
+                    
                     telaInicial.setDados(dados);
                     telaInicial.setObjetivos(objetivos);
                     
@@ -265,39 +273,58 @@ public class TelaAdicionarObjetivo extends javax.swing.JFrame {
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
 
-        Objetivo primeiro = telaInicial.getObjetivos().getFirst();
-
-        if (primeiro.getDiasMeta().isEmpty()){
-            telaInicial.atualizarInformacoes(primeiro.getDiasPassados(), 0, primeiro.getNome());
-        } else {
-            telaInicial.atualizarInformacoes(primeiro.getDiasPassados(), primeiro.getDiasMeta().get(primeiro.getMetaAtual()), primeiro.getNome());
+        try {
+            
+            if (!telaInicial.getObjetivos().isEmpty()){
+                Objetivo primeiro = telaInicial.getObjetivos().getFirst();
+                
+                if (primeiro.getDiasMeta().isEmpty()){
+                    telaInicial.atualizarInformacoes(primeiro.getDiasPassados(), 0, primeiro.getNome());
+                } else {
+                    telaInicial.atualizarInformacoes(primeiro.getDiasPassados(), primeiro.getDiasMeta().get(primeiro.getMetaAtual()), primeiro.getNome());
+                }
+            } else {
+                telaInicial.atualizarInformacoes(0, 0, "");
+            }
+            telaInicial.enable(true);
+            telaInicial.setVisible(true);
+            
+        } catch (Exception e){
+            JOptionPane.showMessageDialog(null, "Erro: " + e, "Erro", JOptionPane.ERROR_MESSAGE);
         }
-        telaInicial.enable(true);
-        telaInicial.setVisible(true);
+    
     }//GEN-LAST:event_formWindowClosed
 
     private void botaoExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoExcluirActionPerformed
         
         int opcao = JOptionPane.showConfirmDialog(null, "Deseja mesmo excluir esse Objetivo? Seu banco de dados será alterado permanentemente.");
         
-        if (opcao == 0){
-            ArrayList<Objetivo> objetivos = telaInicial.getObjetivos();
+        try {
+            if (opcao == 0){
+                ArrayList<Objetivo> objetivos = telaInicial.getObjetivos();
+                Dados dados = new Dados();
+                
+                objetivos.remove(indiceEditar);
+
+                if (objetivos.isEmpty()){
+                    telaInicial.dados.excluirDados();
+                    
+                } else {
+                    telaInicial.setObjetivos(objetivos);
+                    dados.setObjetivos(objetivos);
+                    dados.setDataDoSoftware(telaInicial.getDados().getDataDoSoftware());
+                    telaInicial.setDados(dados);
+                    dados.serializar(dados);  
+                }
+                
+                telaInicial.inserirNaTabela(dados);
+                this.dispose();
+            }
             
-            objetivos.remove(indiceEditar);
-            
-            telaInicial.setObjetivos(objetivos);
-            
-            Dados dados = new Dados();
-            dados.setObjetivos(objetivos);
-            dados.setDataDoSoftware(telaInicial.getDados().getDataDoSoftware());
-            telaInicial.setDados(dados);
-            dados.serializar(dados);
-            
-            telaInicial.inserirNaTabela(dados);
-            
-            this.dispose();
+        } catch (Exception e){
+            javax.swing.JOptionPane.showMessageDialog(null, "Atenção", "Erro: " + e, ERROR);
         }
-        
+
     }//GEN-LAST:event_botaoExcluirActionPerformed
 
     /**

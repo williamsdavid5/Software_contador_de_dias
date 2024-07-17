@@ -30,6 +30,7 @@ public class TelaInicial extends javax.swing.JFrame {
     public TelaInicial() {
         initComponents();
         this.dados = new Dados();
+        objetivos = new ArrayList<>();
         
         try {
             resgatarDados();
@@ -63,22 +64,29 @@ public class TelaInicial extends javax.swing.JFrame {
             
             labelData.setText("Data: " +dataDoSoftware.getDayOfMonth() + "/" + dataDoSoftware.getMonthValue() + "/" + dataDoSoftware.getYear());
             inserirNaTabela(dados);
-            Objetivo primeiro = dados.getObjetivos().getFirst();
             
-            if (primeiro.getDiasMeta().isEmpty()){
-                atualizarInformacoes(primeiro.getDiasPassados(), 0, primeiro.getNome());
+            if (dados.getObjetivos().isEmpty()){
+                atualizarInformacoes(0, 0, "");
+                progressoLabel.setText("-");
+                
             } else {
-                atualizarInformacoes(primeiro.getDiasPassados(), primeiro.getDiasMeta().get(primeiro.getMetaAtual()), primeiro.getNome());
+                Objetivo primeiro = dados.getObjetivos().getFirst();
+
+                if (primeiro.getDiasMeta().isEmpty()){
+                    atualizarInformacoes(primeiro.getDiasPassados(), 0, primeiro.getNome());
+                } else {
+                    atualizarInformacoes(primeiro.getDiasPassados(), primeiro.getDiasMeta().get(primeiro.getMetaAtual()), primeiro.getNome());
+                }
             }
             
             //atualizarInformacoes(primeiro.getDiasPassados(), primeiro.getDiasMeta().get(primeiro.getMetaAtual()), primeiro.getNome());
             
         } catch (java.lang.NullPointerException e){
-            System.out.println(e);
+            //System.out.println(e);
             
         } catch (Exception e){
-            System.out.print(e);
-            JOptionPane.showMessageDialog(null, "Erro ao carregar dados. Sinto muito, mas seus dados foram excluídos...", "Erro", JOptionPane.ERROR_MESSAGE);
+            //System.out.print(e);
+            JOptionPane.showMessageDialog(null, "Erro ao carregar dados. Sinto muito, mas seus dados foram excluídos...\nErro: " + e, "Erro", JOptionPane.ERROR_MESSAGE);
             dados.excluirDados();
 
             DefaultTableModel modeloTabela = (DefaultTableModel) tabela.getModel();
@@ -125,7 +133,12 @@ public class TelaInicial extends javax.swing.JFrame {
             double progresso = ((double) diasPassados / proximaMeta) * 100;
             jProgressBar1.setValue((int) progresso);
             metaLabel.setText("Objetivo: " + nome);
-            progressoLabel.setText(String.valueOf(diasPassados) + " Dias");
+            
+            if (nome.trim().equals("")){
+                progressoLabel.setText("-");
+            } else {
+                progressoLabel.setText(String.valueOf(diasPassados) + " Dias");
+            }
 
             if (proximaMeta == 0){
                 proximaMetaLabel.setText("-");
@@ -139,25 +152,35 @@ public class TelaInicial extends javax.swing.JFrame {
     }
     
     public void inserirNaTabela(Dados dados){
-        objetivos = dados.getObjetivos();
-
-        Iterator iterator = objetivos.iterator();
+        
         DefaultTableModel modeloTabela = (DefaultTableModel) tabela.getModel();
         modeloTabela.setRowCount(0);
+        
+        if (!dados.getObjetivos().isEmpty()){
+            objetivos = dados.getObjetivos();
 
-        while (iterator.hasNext()){
-            Objetivo atual = (Objetivo) iterator.next();
+            Iterator iterator = objetivos.iterator();
 
-            String nome = atual.getNome();
-            Integer diasPassados = atual.getDiasPassados();
 
-            try {
-                Integer proximaMeta = atual.getDiasMeta().get(atual.getMetaAtual());
-                modeloTabela.addRow(new Object [] {nome, diasPassados, proximaMeta});
-            } catch (Exception e){
-                modeloTabela.addRow(new Object [] {nome, diasPassados, "-"});
-            }
-        } 
+            while (iterator.hasNext()){
+                Objetivo atual = (Objetivo) iterator.next();
+
+                String nome = atual.getNome();
+                Integer diasPassados = atual.getDiasPassados();
+
+                try {
+                    Integer proximaMeta = atual.getDiasMeta().get(atual.getMetaAtual());
+                    modeloTabela.addRow(new Object [] {nome, diasPassados, proximaMeta});
+                } catch (Exception e){
+                    modeloTabela.addRow(new Object [] {nome, diasPassados, "-"});
+                }
+            } 
+        }
+        /*
+        metaLabel.setText("Objetivo: ");
+        progressoLabel.setText("-");
+        proximaMetaLabel.setText("-");
+*/
     }
     
     public void salvarDados(){
@@ -437,10 +460,17 @@ public class TelaInicial extends javax.swing.JFrame {
                 
                 Objetivo primeiro = dados.getObjetivos().getFirst();
                 
-                atualizarInformacoes(primeiro.getDiasPassados(), primeiro.getDiasMeta().get(primeiro.getMetaAtual()), primeiro.getNome());
+                if (primeiro.getDiasMeta().isEmpty()){
+                    atualizarInformacoes(primeiro.getDiasPassados(), 0, primeiro.getNome());
+                } else {
+                    atualizarInformacoes(primeiro.getDiasPassados(), primeiro.getDiasMeta().get(primeiro.getMetaAtual()), primeiro.getNome());
+                }
+                
+                //atualizarInformacoes(primeiro.getDiasPassados(), primeiro.getDiasMeta().get(primeiro.getMetaAtual()), primeiro.getNome());
                 
             } catch (Exception e){
-                javax.swing.JOptionPane.showMessageDialog(null, "Atenção", "Erro na leitura!", ERROR);
+                System.out.println("--------------------------- " + e + " ---------------------------");
+                //javax.swing.JOptionPane.showMessageDialog(null, "Atenção", "Erro na leitura!", ERROR);
 
             }
         }
@@ -450,19 +480,27 @@ public class TelaInicial extends javax.swing.JFrame {
     private void excluirDadosMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_excluirDadosMenuActionPerformed
         int opcao = javax.swing.JOptionPane.showConfirmDialog(null, "Exclior todos os dados existentes? (Muito cuidado!)");
         
-        if (opcao == 0){
-            dados.excluirDados();
-            this.dados = new Dados();
-            this.objetivos = new ArrayList<>();
-            //resgatarDados();
+        try {
+            if (opcao == 0){
+                dados.excluirDados();
+                this.dados = new Dados();
+                this.objetivos = new ArrayList<>();
+                //resgatarDados();
+            }
+
+            DefaultTableModel modeloTabela = (DefaultTableModel) tabela.getModel();
+            modeloTabela.setRowCount(0);
+
+            atualizarInformacoes(0, 0, " ");
+            progressoLabel.setText("-");
+            botaoEditar.setVisible(false);
+        
+        } catch (java.lang.NullPointerException e){
+            JOptionPane.showMessageDialog(null, "Não há dados a serem excluídos.");
+        } catch (Exception e){
+            javax.swing.JOptionPane.showMessageDialog(null, "Atenção", "Erro: " + e, ERROR);
         }
-        
-        DefaultTableModel modeloTabela = (DefaultTableModel) tabela.getModel();
-        modeloTabela.setRowCount(0);
-        
-        atualizarInformacoes(0, 0, " ");
-        progressoLabel.setText("-");
-        botaoEditar.setVisible(false);
+
     }//GEN-LAST:event_excluirDadosMenuActionPerformed
 
     private void salvarDadosMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salvarDadosMenuActionPerformed
@@ -503,8 +541,9 @@ public class TelaInicial extends javax.swing.JFrame {
             //telaAdicionar.setVisible(true);
             
         } catch (Exception e){
-            System.out.println(e);
-        }        
+            
+            javax.swing.JOptionPane.showMessageDialog(null, "Atenção", "Erro: " + e, ERROR);
+        }
     }//GEN-LAST:event_botaoEditarActionPerformed
 
     /**
