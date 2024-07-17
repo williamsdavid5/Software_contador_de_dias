@@ -39,8 +39,8 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="32767" attributes="0"/>
+              <Component id="jPanel1" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -75,9 +75,8 @@
                           <Component id="metasLabel" max="32767" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           <Component id="botaoExcluir" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                           <Component id="botaoSalvarMeta" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -96,14 +95,15 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="metasLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="botaoAdicionarMeta" alignment="3" pref="0" max="32767" attributes="0"/>
-                      <Component id="botaoRemoverMeta" alignment="3" pref="17" max="32767" attributes="0"/>
+                      <Component id="botaoAdicionarMeta" alignment="3" pref="17" max="32767" attributes="0"/>
+                      <Component id="botaoRemoverMeta" alignment="3" pref="0" max="32767" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="12" max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="botaoExcluir" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="botaoSalvarMeta" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="botaoExcluir" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
+                  <EmptySpace min="0" pref="6" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>

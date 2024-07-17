@@ -448,7 +448,7 @@ public class TelaInicial extends javax.swing.JFrame {
             try (FileInputStream fileIn = new FileInputStream(dado); ObjectInputStream in = new ObjectInputStream(fileIn)){
                 this.dados = (Dados) in.readObject();
                 
-                int substituir = javax.swing.JOptionPane.showConfirmDialog(null, "Importar dados do disco irá substituir todos os seus dados já salvos. Substituir dados existentes? (Muito cuidado!)");
+                int substituir = javax.swing.JOptionPane.showConfirmDialog(null, "Importar dados do disco irá substituir todos os seus dados já salvos. Substituir dados existentes? (Muito cuidado!)", "Importar", JOptionPane.YES_NO_OPTION);
                 
                 if (substituir == 0){
                     dados.serializar(dados);
@@ -469,7 +469,7 @@ public class TelaInicial extends javax.swing.JFrame {
                 //atualizarInformacoes(primeiro.getDiasPassados(), primeiro.getDiasMeta().get(primeiro.getMetaAtual()), primeiro.getNome());
                 
             } catch (Exception e){
-                System.out.println("--------------------------- " + e + " ---------------------------");
+                javax.swing.JOptionPane.showMessageDialog(null, "Atenção", "Erro: " + e, ERROR);
                 //javax.swing.JOptionPane.showMessageDialog(null, "Atenção", "Erro na leitura!", ERROR);
 
             }
@@ -478,23 +478,23 @@ public class TelaInicial extends javax.swing.JFrame {
     }//GEN-LAST:event_carregarDadosMenuActionPerformed
 
     private void excluirDadosMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_excluirDadosMenuActionPerformed
-        int opcao = javax.swing.JOptionPane.showConfirmDialog(null, "Exclior todos os dados existentes? (Muito cuidado!)");
+        int opcao = javax.swing.JOptionPane.showConfirmDialog(null, "Exclior todos os dados existentes? (Muito cuidado!)","Excluir",JOptionPane.YES_NO_OPTION);
         
         try {
-            if (opcao == 0){
+            if (opcao == JFileChooser.APPROVE_OPTION){
                 dados.excluirDados();
                 this.dados = new Dados();
                 this.objetivos = new ArrayList<>();
                 //resgatarDados();
+                
+                DefaultTableModel modeloTabela = (DefaultTableModel) tabela.getModel();
+                modeloTabela.setRowCount(0);
+
+                atualizarInformacoes(0, 0, " ");
+                progressoLabel.setText("-");
+                botaoEditar.setVisible(false);
             }
 
-            DefaultTableModel modeloTabela = (DefaultTableModel) tabela.getModel();
-            modeloTabela.setRowCount(0);
-
-            atualizarInformacoes(0, 0, " ");
-            progressoLabel.setText("-");
-            botaoEditar.setVisible(false);
-        
         } catch (java.lang.NullPointerException e){
             JOptionPane.showMessageDialog(null, "Não há dados a serem excluídos.");
         } catch (Exception e){
@@ -519,12 +519,12 @@ public class TelaInicial extends javax.swing.JFrame {
 
     private void ajudaMenuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ajudaMenuMouseClicked
         new TelaAjuda(this).setVisible(true);
-        this.setEnabled(false);
     }//GEN-LAST:event_ajudaMenuMouseClicked
 
     private void botaoNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoNovoActionPerformed
         new TelaAdicionarObjetivo(this).setVisible(true);
         this.enable(false);
+        botaoEditar.setVisible(false);
         
     }//GEN-LAST:event_botaoNovoActionPerformed
 
@@ -538,6 +538,7 @@ public class TelaInicial extends javax.swing.JFrame {
             TelaAdicionarObjetivo telaAdicionar = new TelaAdicionarObjetivo(this);
             telaAdicionar.setVisible(true);
             telaAdicionar.editarObjetivo(obj, selecionado);
+            botaoEditar.setVisible(false);
             //telaAdicionar.setVisible(true);
             
         } catch (Exception e){

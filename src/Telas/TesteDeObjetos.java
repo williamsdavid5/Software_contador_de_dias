@@ -60,13 +60,13 @@ public class TesteDeObjetos {
         obj.setDiasPassados(39);
         lista.add(obj);
         
-        obj = new Objetivo("Estudar ingles");
-        obj.setDiasPassados(352);
-        lista.add(obj);
-        
-        obj = new Objetivo("Exercicios fisicos");
-        obj.setDiasPassados(56);
-        lista.add(obj);
+        Objetivo obj2 = new Objetivo("Estudar ingles");
+        obj2.setDiasPassados(352);
+        lista.add(obj2);
+       
+        obj2 = new Objetivo("Exercicios fisicos");
+        obj2.setDiasPassados(56);
+        lista.add(obj2);
         
         Dados dados = new Dados();
         dados.setObjetivos(lista);

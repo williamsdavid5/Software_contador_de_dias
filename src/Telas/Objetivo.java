@@ -101,6 +101,10 @@ public class Objetivo implements Serializable{
 
     public void setDiasPassados(int diasPassados) {
         this.diasPassados = diasPassados;
+        
+        if (!this.diasMeta.isEmpty()){
+            verificaMeta();
+        }
     }
 
     public boolean isConcluido() {
