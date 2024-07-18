@@ -50,14 +50,16 @@ public class TesteDeObjetos {
         metas.add(30);
         
         Objetivo obj = new Objetivo(new ArrayList<>(metas), "Estudar mais");
-        obj.setDiasPassados(7);
+        obj.setDiasPassados(10);
         lista.add(obj);
         
         metas.clear();
-        metas.add(50);
+        
+        metas.add(2);
+        metas.add(2);
                 
         obj = new Objetivo(new ArrayList<>(metas), "Sem redes sociais");
-        obj.setDiasPassados(39);
+        obj.setDiasPassados(1);
         lista.add(obj);
         
         Objetivo obj2 = new Objetivo("Estudar ingles");
@@ -70,7 +72,7 @@ public class TesteDeObjetos {
         
         Dados dados = new Dados();
         dados.setObjetivos(lista);
-        dados.setDataDoSoftware(LocalDate.of(2024, 07, 14));
+        dados.setDataDoSoftware(LocalDate.of(2024, 07, 18));
         
         dados.serializar(dados);
 

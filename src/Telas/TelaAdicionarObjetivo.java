@@ -171,17 +171,22 @@ public class TelaAdicionarObjetivo extends javax.swing.JFrame {
         if (entrada != null){
             try {
                 int dias = Integer.parseInt(entrada);
-                metas.add(dias);
-                String label = "Metas:";
+                
+                if ((!metas.isEmpty()) && dias <= metas.getLast()){
+                    JOptionPane.showMessageDialog(null, "Você precisa digitar as metas de forma crescente! Exemplo: 2 dias -> 4 dias -> 8 dias...", "Erro", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    metas.add(dias);
+                    String label = "Metas:";
 
-                Iterator iterator = metas.iterator();
+                    Iterator iterator = metas.iterator();
 
-                while (iterator.hasNext()){
-                    label = label + " -> " +(String.valueOf(iterator.next()));
+                    while (iterator.hasNext()){
+                        label = label + " -> " +(String.valueOf(iterator.next()));
+                    }
+
+                    metasLabel.setText(label);
                 }
-
-                metasLabel.setText(label);
-
+                
             } catch (java.lang.NumberFormatException e){
                 JOptionPane.showMessageDialog(null, "Digite apenas números!", "Erro", JOptionPane.ERROR_MESSAGE);
             } 

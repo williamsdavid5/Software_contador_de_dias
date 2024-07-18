@@ -61,8 +61,9 @@ public class TelaInicial extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "Algo está errado no seu calendário! Data salva pelo software: " + dataSalva);
                 System.exit(0);
             }
+            this.dataDoSoftware = dados.getDataDoSoftware();
             
-            labelData.setText("Data: " +dataDoSoftware.getDayOfMonth() + "/" + dataDoSoftware.getMonthValue() + "/" + dataDoSoftware.getYear());
+            //labelData.setText("Data: " +dataDoSoftware.getDayOfMonth() + "/" + dataDoSoftware.getMonthValue() + "/" + dataDoSoftware.getYear());
             inserirNaTabela(dados);
             
             if (dados.getObjetivos().isEmpty()){
@@ -142,8 +143,10 @@ public class TelaInicial extends javax.swing.JFrame {
 
             if (proximaMeta == 0){
                 proximaMetaLabel.setText("-");
+                //labelData.setText("-");
             } else {
                 proximaMetaLabel.setText(String.valueOf(proximaMeta));
+                //labelData.setText("Data: " + dados.getDataDoSoftware().getDayOfMonth() + "/" + dados.getDataDoSoftware().getMonthValue() + "/" + dados.getDataDoSoftware().getYear());
             }
         } catch (Exception e){
             JOptionPane.showMessageDialog(null, "Erro ao atualizar informações.", "Erro", JOptionPane.ERROR_MESSAGE);
@@ -208,7 +211,6 @@ public class TelaInicial extends javax.swing.JFrame {
         metaLabel = new javax.swing.JLabel();
         proximaMetaLabel = new javax.swing.JLabel();
         progressoLabel = new javax.swing.JLabel();
-        labelData = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tabela = new javax.swing.JTable();
@@ -244,9 +246,6 @@ public class TelaInicial extends javax.swing.JFrame {
         progressoLabel.setText("-");
         progressoLabel.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Atual", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP));
 
-        labelData.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        labelData.setText("Data:");
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -260,8 +259,7 @@ public class TelaInicial extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(progressoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(proximaMetaLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(labelData, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(proximaMetaLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -276,8 +274,7 @@ public class TelaInicial extends javax.swing.JFrame {
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(8, 8, 8)
-                .addComponent(labelData))
+                .addContainerGap())
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Metas atuais", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.TOP));
@@ -400,19 +397,21 @@ public class TelaInicial extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -465,7 +464,8 @@ public class TelaInicial extends javax.swing.JFrame {
                 } else {
                     atualizarInformacoes(primeiro.getDiasPassados(), primeiro.getDiasMeta().get(primeiro.getMetaAtual()), primeiro.getNome());
                 }
-                
+               
+                //labelData.setText("Data: " + dados.getDataDoSoftware().getDayOfMonth() + "/" + dados.getDataDoSoftware().getMonthValue() + "/" + dados.getDataDoSoftware().getYear());
                 //atualizarInformacoes(primeiro.getDiasPassados(), primeiro.getDiasMeta().get(primeiro.getMetaAtual()), primeiro.getNome());
                 
             } catch (Exception e){
@@ -492,6 +492,7 @@ public class TelaInicial extends javax.swing.JFrame {
 
                 atualizarInformacoes(0, 0, " ");
                 progressoLabel.setText("-");
+                //labelData.setText("-");
                 botaoEditar.setVisible(false);
             }
 
@@ -554,7 +555,7 @@ public class TelaInicial extends javax.swing.JFrame {
         
         try {
             //UIManager.setLookAndFeel(new FlatMacDarkLaf());
-            com.formdev.flatlaf.intellijthemes.FlatMaterialDesignDarkIJTheme.setup();
+            com.formdev.flatlaf.intellijthemes.FlatSolarizedLightIJTheme.setup();
  
         } catch (Exception e){
             e.printStackTrace();
@@ -599,7 +600,6 @@ public class TelaInicial extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel labelData;
     private javax.swing.JLabel metaLabel;
     private javax.swing.JLabel progressoLabel;
     private javax.swing.JLabel proximaMetaLabel;
