@@ -15,10 +15,10 @@ Após baixar, extraia os arquivos para qualquer pasta do seu computador, é alta
 
 Feito isso, você precisa configurar o seu sistema para iniciar o software sempre que você ligar o computador. Para Windows, os passos são: 
 
-1- Abra o menu executar, você pode fazer isso pesquisando "Executar" no seu menu Iniciar, ou pressionando as teclas Windows+R 
-2- Digite "Inicializar" ou o comando "%AppData%\Microsoft\Windows\Start Menu\Programs\Startup", uma pasta será aberta 
-3- Copie um atalho do executável do arquivo para dentro dessa pasta 
-4- Agora, sempre que seu computador ligar, o Windows irá abrir o software 
+1- Abra o menu executar, você pode fazer isso pesquisando "Executar" no seu menu Iniciar, ou pressionando as teclas Windows+R;
+2- Digite "Inicializar" ou o comando "%AppData%\Microsoft\Windows\Start Menu\Programs\Startup", uma pasta será aberta;
+3- Copie um atalho do executável do arquivo para dentro dessa pasta;
+4- Agora, sempre que seu computador ligar, o Windows irá abrir o software;
 
 Feita as configurações, você pode cadastrar seus objetivos, coloque um nome para ele e, se houver, você pode inserir uma ou mais metas (Ex: 15 dias -> 30 dias -> 40 dias...). Ao salvar, a contagem inicia imediatamente. No dia seguinte, ao ligar o computador, o software irá perguntar se você se manteve firme no dia anterior, se Sim, a quantidade de dias passados desde a sua última interação com o software será somada a quantidade de dias salvos, se você não se manteve firme, o software irá zerar sua meta e recomeçar a contagem, então é importante que o usuário reflita sobre seu objetivo antes de responder!
 
